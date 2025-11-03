@@ -11,7 +11,7 @@ terraform {
   cloud {
     organization = "jacobia"
     workspaces {
-      name = "Terriform-Azure"
+      name = "Terraform-Azure"
     }
   }
 }
