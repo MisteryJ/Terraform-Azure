@@ -1,6 +1,6 @@
 provider "azurerm" {
   features {}
-  skip_provider_registration = true
+  resource_provider_registrations = "none"  # use "register" if your role can register providers
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -35,7 +35,7 @@ resource "azurerm_network_security_group" "nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "3389"
-    source_address_prefixes    = ["YOUR.PUBLIC.IP/32"]
+    source_address_prefixes    = ["104.34.42.175"]
     destination_address_prefix = "*"
   }
 }
@@ -64,13 +64,6 @@ resource "azurerm_network_interface" "nic" {
 resource "azurerm_network_interface_security_group_association" "assoc" {
   network_interface_id      = azurerm_network_interface.nic.id
   network_security_group_id = azurerm_network_security_group.nsg.id
-}
-
-# Required: accept the Marketplace plan before deploying
-resource "azurerm_marketplace_agreement" "cis_terms" {
-  publisher = "center-for-internet-security-inc"
-  offer     = "cis-windows-server"
-  plan      = "cis-windows-server2025-l2-gen2"
 }
 
 resource "azurerm_windows_virtual_machine" "cis_vm" {
@@ -109,3 +102,4 @@ resource "azurerm_windows_virtual_machine" "cis_vm" {
 output "public_ip" {
   value = azurerm_public_ip.pip.ip_address
 }
+741
