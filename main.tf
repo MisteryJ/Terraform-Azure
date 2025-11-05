@@ -35,7 +35,7 @@ resource "azurerm_network_security_group" "nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "3389"
-    source_address_prefixes    = ["104.34.42.175"]
+    source_address_prefix    = ["104.34.42.175/32"]
     destination_address_prefix = "*"
   }
 }
@@ -93,10 +93,8 @@ resource "azurerm_windows_virtual_machine" "cis_vm" {
     publisher = "center-for-internet-security-inc"
   }
 
-  enable_automatic_updates = false
+  automatic_updates_enabled = false
   patch_mode               = "Manual"
-
-  depends_on = [azurerm_marketplace_agreement.cis_terms]
 }
 
 output "public_ip" {
