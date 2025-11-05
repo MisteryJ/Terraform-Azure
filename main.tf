@@ -102,4 +102,3 @@ resource "azurerm_windows_virtual_machine" "cis_vm" {
 output "public_ip" {
   value = azurerm_public_ip.pip.ip_address
 }
-741
