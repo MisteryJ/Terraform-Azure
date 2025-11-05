@@ -66,19 +66,28 @@ resource "azurerm_network_interface_security_group_association" "assoc" {
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
+resource "azurerm_windows_virtual_machine" "vm" {
+  name                = "win-ws2025"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  size                = "Standard_B2s"
+  admin_username      = "azureuser"
+  admin_password      = "P@ssword123!"
+  network_interface_ids = [azurerm_network_interface.nic.id]
+
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }
 
-source_image_reference {
-  publisher = "MicrosoftWindowsServer"
-  offer     = "WindowsServer"
-  sku       = "2025-datacenter"
-  version   = "latest"
-}
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2025-datacenter"
+    version   = "latest"
+  }
 
-  automatic_updates_enabled = false
+  enable_automatic_updates = false
   patch_mode               = "Manual"
 }
 
