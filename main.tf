@@ -4,12 +4,12 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-cis-ws2025"
+  name     = "rg-win-ws2025"
   location = "westus2"
 }
 
 resource "azurerm_virtual_network" "vnet" {
-  name                = "cis2025-vnet"
+  name                = "win2025-vnet"
   address_space       = ["10.42.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -23,7 +23,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_network_security_group" "nsg" {
-  name                = "cis2025-nsg"
+  name                = "win2025-nsg"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 
@@ -41,7 +41,7 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 resource "azurerm_public_ip" "pip" {
-  name                = "cis2025-pip"
+  name                = "win2025-pip"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   allocation_method   = "Static"
@@ -49,7 +49,7 @@ resource "azurerm_public_ip" "pip" {
 }
 
 resource "azurerm_network_interface" "nic" {
-  name                = "cis2025-nic"
+  name                = "win2025-nic"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 
@@ -66,32 +66,17 @@ resource "azurerm_network_interface_security_group_association" "assoc" {
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-resource "azurerm_windows_virtual_machine" "cis_vm" {
-  name                = "cis-ws2025-l2"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  size                = "Standard_B2s"       # cost-effective lab size
-  admin_username      = "azureuser"
-  admin_password      = "P@ssword123!"
-  network_interface_ids = [azurerm_network_interface.nic.id]
-
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }
 
-  source_image_reference {
-    publisher = "center-for-internet-security-inc"
-    offer     = "cis-windows-server"
-    sku       = "cis-windows-server2025-l2-gen2"
-    version   = "latest"
-  }
-
-  plan {
-    name      = "cis-windows-server2025-l2-gen2"
-    product   = "cis-windows-server"
-    publisher = "center-for-internet-security-inc"
-  }
+source_image_reference {
+  publisher = "MicrosoftWindowsServer"
+  offer     = "WindowsServer"
+  sku       = "2025-datacenter"
+  version   = "latest"
+}
 
   automatic_updates_enabled = false
   patch_mode               = "Manual"
